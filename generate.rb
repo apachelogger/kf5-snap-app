@@ -209,7 +209,7 @@ config.confinement = 'devmode'
 config.grade = 'devel'
 
 app = SnapcraftConfig::App.new
-app.command = "sh kf5-launch #{source_name}"
+app.command = "kf5-launch #{source_name}"
 app.plugs = %w(kde-frameworks-5-plug home)
 config.apps[source_name] = app
 
@@ -222,15 +222,15 @@ config.plugs['kde-frameworks-5-plug'] = plug
 
 dev = SnapcraftConfig::Part.new
 dev.plugin = 'dump'
-dev.source = 'http://build.neon.kde.org/job/test_kf5-snap/lastSuccessfulBuild/artifact/kde-frameworks-5-dev_amd64.tar.xz'
-# dev.source = '/home/me/Downloads/kde-frameworks-5-dev_amd64.tar.xz'
+# dev.source = 'http://build.neon.kde.org/job/test_kf5-snap/lastSuccessfulBuild/artifact/kde-frameworks-5-dev_amd64.tar.xz'
+dev.source = '/home/me/Downloads/kde-frameworks-5-dev_amd64.tar.xz'
 dev.stage_packages = []
 dev.snap = %w(-*)
 config.parts['kde-frameworks-5-dev'] = dev
 
 env = SnapcraftConfig::Part.new
 env.plugin = 'dump'
-env.source = 'http://build.neon.kde.org/job/kde-frameworks-5-env.snap/lastSuccessfulBuild/artifact/kde-frameworks-5-env_all.tar.xz'
+env.source = 'https://github.com/apachelogger/kf5-snap-env.git'
 env.snap = %w(kf5-launch kf5)
 config.parts['kde-frameworks-5-env'] = env
 
