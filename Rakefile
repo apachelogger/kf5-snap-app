@@ -12,6 +12,7 @@ task :'repo::setup' do
 end
 
 task :generate do
+  puts File.read('appname')
   ruby 'generate.rb'
 end
 task :generate => :'repo::setup'
