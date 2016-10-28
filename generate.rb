@@ -199,6 +199,7 @@ class SnapcraftConfig
   end
 end
 
+DEV_EXCLUSION = %w(cmake debhelper pkg-kde-tools).freeze
 STAGED_DEV_PATH = 'http://build.neon.kde.org/view/testy/job/test_kf5-snap/lastSuccessfulBuild/artifact/stage-dev.json'.freeze
 
 source_name = File.read('appname').strip
@@ -244,7 +245,7 @@ source.all_build_depends
 
 apppart = SnapcraftConfig::Part.new
 apppart.after = %w(kde-frameworks-5-dev)
-apppart.build_packages = (source.all_build_depends - dev_stage)
+apppart.build_packages = (source.all_build_depends - dev_stage) - DEV_EXCLUSION
 apppart.configflags = %w(
   -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
   -DCMAKE_INSTALL_PREFIX=/usr
