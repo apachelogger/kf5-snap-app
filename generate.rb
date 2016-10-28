@@ -244,7 +244,7 @@ source.all_build_depends
 
 apppart = SnapcraftConfig::Part.new
 apppart.after = %w(kde-frameworks-5-dev)
-apppart.build_packages = source.all_build_depends - dev_stage
+apppart.build_packages = (source.all_build_depends - dev_stage) + ['libkf5windowsystem-dev']
 apppart.configflags = %w(
   -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
   -DCMAKE_INSTALL_PREFIX=/usr
