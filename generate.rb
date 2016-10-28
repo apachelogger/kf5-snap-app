@@ -253,7 +253,6 @@ apppart.configflags = %w(
   -DENABLE_TESTING=OFF
   -DBUILD_TESTING=OFF
   -DKDE_SKIP_TEST_SETTINGS=ON
-  -DCMAKE_CROSSCOMPILING=ON
 )
 apppart.plugin = 'cmake'
 apppart.source = "http://download.kde.org/stable/applications/16.08.2/src/#{source_name}-16.08.2.tar.xz"
