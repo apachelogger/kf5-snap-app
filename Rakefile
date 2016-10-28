@@ -18,6 +18,8 @@ end
 task :generate => :'repo::setup'
 
 task :snapcraft do
+  # TODO: can be dropped with KF5.28 https://git.reviewboard.kde.org/r/129273/
+  Dir.mkdir('/usr/include/KF5') unless Dir.exist?('/usr/include/KF5')
   sh 'apt install -y snapcraft'
   sh 'snapcraft'
 end
