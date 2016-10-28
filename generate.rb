@@ -1,3 +1,5 @@
+require 'json'
+require 'open-uri'
 require 'yaml'
 
 class Source
@@ -197,8 +199,11 @@ class SnapcraftConfig
   end
 end
 
+STAGED_DEV_PATH = 'http://build.neon.kde.org/view/testy/job/test_kf5-snap/lastSuccessfulBuild/artifact/stage-dev.json'.freeze
+
 source_name = File.read('appname').strip
 source_version = '16.08.0'
+dev_stage = JSON.read(open(STAGED_DEV_PATH).read)
 
 config = SnapcraftConfig.new
 config.name = source_name
@@ -239,7 +244,7 @@ source.all_build_depends
 
 apppart = SnapcraftConfig::Part.new
 apppart.after = %w(kde-frameworks-5-dev)
-apppart.build_packages = source.all_build_depends
+apppart.build_packages = source.all_build_depends - dev_stage
 apppart.configflags = %w(
   -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
   -DCMAKE_INSTALL_PREFIX=/usr
