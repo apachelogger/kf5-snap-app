@@ -205,6 +205,7 @@ STAGED_DEV_PATH = 'http://build.neon.kde.org/view/testy/job/test_kf5-snap/lastSu
 source_name = File.read('appname').strip
 source_version = '16.08.0'
 dev_stage = JSON.parse(open(STAGED_DEV_PATH).read)
+dev_stage.reject! { |x| x.include?('doctools') }
 
 config = SnapcraftConfig.new
 config.name = source_name
