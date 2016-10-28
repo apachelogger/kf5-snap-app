@@ -20,6 +20,8 @@ task :generate => :'repo::setup'
 task :snapcraft do
   # TODO: can be dropped with KF5.28 https://git.reviewboard.kde.org/r/129273/
   Dir.mkdir('/usr/include/KF5') unless Dir.exist?('/usr/include/KF5')
+  # KDoctools is rubbish and lets meinproc resolve asset paths via QStandardPaths
+  ENV['XDG_DATA_DIRS'] = "#{Dir.pwd}/stage/usr/local/share:#{Dir.pwd}/stage/usr/share:/usr/local/share:/usr/share"
   sh 'apt install -y snapcraft'
   sh 'snapcraft'
 end
