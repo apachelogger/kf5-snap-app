@@ -227,8 +227,8 @@ config.plugs['kde-frameworks-5-plug'] = plug
 
 dev = SnapcraftConfig::Part.new
 dev.plugin = 'dump'
-# dev.source = 'http://build.neon.kde.org/job/test_kf5-snap/lastSuccessfulBuild/artifact/kde-frameworks-5-dev_amd64.tar.xz'
-dev.source = '/home/me/Downloads/kde-frameworks-5-dev_amd64.tar.xz'
+dev.source = 'http://build.neon.kde.org/job/test_kf5-snap/lastSuccessfulBuild/artifact/kde-frameworks-5-dev_amd64.tar.xz'
+# dev.source = '/home/me/Downloads/kde-frameworks-5-dev_amd64.tar.xz'
 dev.stage_packages = []
 dev.snap = %w(-*)
 config.parts['kde-frameworks-5-dev'] = dev
