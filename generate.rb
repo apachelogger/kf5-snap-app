@@ -205,6 +205,9 @@ source_name = File.read('appname').strip
 source_version = '16.08.0'
 dev_stage = JSON.parse(open(STAGED_DEV_PATH).read)
 
+# TODO: can be dropped with KF5.28 https://git.reviewboard.kde.org/r/129273/
+Dir.mkdir('/usr/include/KF5') unless Dir.exist?('/usr/include/KF5')
+
 config = SnapcraftConfig.new
 config.name = source_name
 config.version = source_version
