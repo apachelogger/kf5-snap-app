@@ -34,7 +34,11 @@ def cleanNode(label = null, body) {
   node(label) {
     deleteDir()
     try {
-      body()
+      wrap(<object of type hudson.plugins.ansicolor.AnsiColorBuildWrapper>) {
+        wrap([$class: 'TimestamperBuildWrapper']) {
+          body()
+        }
+      }
     } finally {
       step([$class: 'WsCleanup', cleanWhenFailure: true])
     }
