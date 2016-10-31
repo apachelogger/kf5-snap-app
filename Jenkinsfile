@@ -34,7 +34,7 @@ def cleanNode(label = null, body) {
   node(label) {
     deleteDir()
     try {
-      wrap(<object of type hudson.plugins.ansicolor.AnsiColorBuildWrapper>) {
+      wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
         wrap([$class: 'TimestamperBuildWrapper']) {
           body()
         }
