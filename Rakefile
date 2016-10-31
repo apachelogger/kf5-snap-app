@@ -28,3 +28,13 @@ task :snapcraft do
   sh 'snapcraft'
 end
 task :snapcraft => :'repo::setup'
+
+task :publish do
+  require 'fileutils'
+  sh 'apt update'
+  sh 'apt install -y snapcraft'
+  cfgdir = Dir.home + '/.config/snapcraft'
+  FileUtils.mkpath(cfgdir)
+  File.write("#{cfgdir}/snapcraft.cfg", File.read('snapcraft.cfg'))
+  sh 'snapcraft push *.snap'
+end
