@@ -8,6 +8,7 @@ cleanNode {
   sh 'ls -lah'
   sh '~/tooling/kci/contain.rb rake generate'
   sh "echo '----snapcraft----'; cat snapcraft.yaml; echo '----snapcraft----'"
+  archiveArtifacts 'snapcraft.yaml'
   stash includes: 'snapcraft.yaml, Rakefile', name: 'snapcraft'
 }
 
