@@ -103,6 +103,7 @@ class SnapcraftConfig
       c.tag = nil # Unset the tag to prevent clutter
       self.class.readable_attrs.each do |readable_attrs|
         next unless data = method(readable_attrs).call
+        next if data.respond_to?(:empty?) && data.empty?
         c[readable_attrs.to_s.tr('_', '-')] = data
       end
       super(c) if defined?(super)
