@@ -11,13 +11,18 @@ task :'repo::setup' do
   sh 'apt update'
 end
 
+task :appstream do
+  sh 'apt install -y appstream gir1.2-appstream-1.0 libappstream-dev libgirepository1.0-dev'
+end
+task :appstream => :'repo::setup'
+
 task :generate do
   puts File.read('appname')
   sh 'apt install -y appstream'
   sh 'apt update'
   ruby 'generate.rb'
 end
-task :generate => :'repo::setup'
+task :generate => [:'repo::setup', :appstream]
 
 task :snapcraft do
   # TODO: can be dropped with KF5.28 https://git.reviewboard.kde.org/r/129273/
