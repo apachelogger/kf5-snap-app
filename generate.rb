@@ -254,12 +254,14 @@ dev.plugin = 'dump'
 dev.source = 'http://build.neon.kde.org/job/test_kf5-snap/lastSuccessfulBuild/artifact/kde-frameworks-5-dev_amd64.tar.xz'
 # dev.source = '/home/me/Downloads/kde-frameworks-5-dev_amd64.tar.xz'
 dev.stage_packages = []
+dev.filesets = nil # no default sets needed
 dev.snap = %w(-*)
 config.parts['kde-frameworks-5-dev'] = dev
 
 env = SnapcraftConfig::Part.new
 env.plugin = 'dump'
 env.source = 'https://github.com/apachelogger/kf5-snap-env.git'
+env.filesets = nil # no default sets needed
 env.snap = %w(kf5-launch kf5)
 config.parts['kde-frameworks-5-env'] = env
 
