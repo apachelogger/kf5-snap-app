@@ -12,10 +12,7 @@ module APT
     end
 
     def get(pkg)
-      system('apt-get',
-             '-o', "dir::cache::archives=#{path}",
-             '-o', 'Debug::NoLocking=true',
-             '--reinstall', '-d', 'install', pkg)
+      system('dget', '-d', pkg, chdir: path)
       files = Dir.glob("#{path}/#{pkg}_*.deb")
       raise "Couldnt resolve local name #{files}" unless files.size == 1
       files[0]

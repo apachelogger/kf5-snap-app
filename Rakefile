@@ -18,7 +18,7 @@ task :appstream => :'repo::setup'
 
 task :generate do
   puts File.read('appname')
-  sh 'apt install -y appstream'
+  sh 'apt install -y appstream devscripts'
   sh 'apt update'
   ruby 'generate.rb'
 end
