@@ -1,6 +1,10 @@
 require 'json'
 require 'open-uri'
+require 'tmpdir'
 require 'yaml'
+
+require_relative 'appstreamer'
+require_relative 'downloader'
 
 class Source
   def initialize(upstream_name)
@@ -203,17 +207,34 @@ DEV_EXCLUSION = %w(cmake debhelper pkg-kde-tools).freeze
 STAGED_DEV_PATH = 'http://build.neon.kde.org/view/testy/job/test_kf5-snap/lastSuccessfulBuild/artifact/stage-dev.json'.freeze
 
 source_name = File.read('appname').strip
-source_version = '16.08.0'
+source_version = nil
+desktop_id = "org.kde.#{source_name}.desktop"
 dev_stage = JSON.parse(open(STAGED_DEV_PATH).read)
 dev_stage.reject! { |x| x.include?('doctools') }
 
 config = SnapcraftConfig.new
 config.name = source_name
-config.version = source_version
 config.summary = source_name
 config.description = source_name
-config.confinement = 'devmode'
+config.confinement = 'strict'
 config.grade = 'devel'
+
+FileUtils.mkpath('setup/gui')
+appstreamer = AppStreamer.new(desktop_id)
+appstreamer.expand(config)
+icon_url = appstreamer.icon_url
+File.write("setup/gui/icon#{File.extname(icon_url)}", open(icon_url).read)
+
+Dir.mktmpdir do |tmpdir|
+  debfile = APT::Downloader.new(tmpdir).get(appstreamer.component.pkgname)
+  deb = Deb.new(debfile)
+  source_version = deb.upstream_version
+  config.version = source_version
+  deb.extract(tmpdir)
+  desktopfile = Dir.glob("#{tmpdir}/usr/share/applications/**/#{desktop_id}")
+  raise "not one desktop found [#{desktopfile}]" unless desktopfile.size == 1
+  FileUtils.cp(desktopfile[0], 'setup/gui/')
+end
 
 app = SnapcraftConfig::App.new
 app.command = "kf5-launch #{source_name}"
