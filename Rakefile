@@ -13,6 +13,8 @@ end
 
 task :generate do
   puts File.read('appname')
+  sh 'apt install -y appstream'
+  sh 'apt update'
   ruby 'generate.rb'
 end
 task :generate => :'repo::setup'
