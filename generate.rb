@@ -238,7 +238,7 @@ end
 
 app = SnapcraftConfig::App.new
 app.command = "kf5-launch #{source_name}"
-app.plugs = %w(kde-frameworks-5-plug home x11 opengl network network-bind)
+app.plugs = %w(kde-frameworks-5-plug home x11 opengl network network-bind unity7 pulseaudio)
 config.apps[source_name] = app
 
 plug = SnapcraftConfig::Plug.new
