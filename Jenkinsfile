@@ -9,14 +9,13 @@ cleanNode {
   sh '~/tooling/kci/contain.rb rake generate'
   sh "echo '----snapcraft----'; cat snapcraft.yaml; echo '----snapcraft----'"
   archiveArtifacts 'snapcraft.yaml, setup/**'
-  sh 'ls -lah'
   stash includes: 'snapcraft.yaml, setup/**, Rakefile', name: 'snapcraft'
 }
 
 cleanNode {
   stage 'snapcraft'
   unstash 'snapcraft'
-  sh 'ls -lah'
+  sh 'tree || ls -lahR'
   sh '~/tooling/kci/contain.rb rake snapcraft'
   archiveArtifacts '*_amd64.snap'
   stash name: 'snaps', includes: 'Rakefile, *_amd64.snap'
@@ -25,13 +24,13 @@ cleanNode {
 cleanNode('master') {
   stage 'snapcraft push'
   unstash 'snaps'
+  sh 'tree || ls -lahR'
   // Temporary workspace during pipeline execution can't be accessed via UI, so
   // this should be save.
   // Even so we should move to a contain.rb which forward mounts the snapcraft
   // dir as volume into the container.
-  sh 'ls -lah'
-  // sh 'cp ~/.config/snapcraft/snapcraft.cfg snapcraft.cfg'
-  // sh '~/tooling/kci/contain.rb rake publish'
+  sh 'cp ~/.config/snapcraft/snapcraft.cfg snapcraft.cfg'
+  sh '~/tooling/kci/contain.rb rake publish'
 }
 
 def cleanNode(label = null, body) {
