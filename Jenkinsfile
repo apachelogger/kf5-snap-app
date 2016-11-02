@@ -9,12 +9,13 @@ cleanNode {
   sh '~/tooling/kci/contain.rb rake generate'
   sh "echo '----snapcraft----'; cat snapcraft.yaml; echo '----snapcraft----'"
   archiveArtifacts 'snapcraft.yaml'
-  stash includes: 'snapcraft.yaml, Rakefile, setup', name: 'snapcraft'
+  stash includes: 'snapcraft.yaml, Rakefile, setup/*', name: 'snapcraft'
 }
 
 cleanNode {
   stage 'snapcraft'
   unstash 'snapcraft'
+  sh 'ls -lah'
   sh '~/tooling/kci/contain.rb rake snapcraft'
   archiveArtifacts '*_amd64.snap'
   stash name: 'snaps', includes: 'Rakefile, *_amd64.snap'
@@ -27,8 +28,9 @@ cleanNode('master') {
   // this should be save.
   // Even so we should move to a contain.rb which forward mounts the snapcraft
   // dir as volume into the container.
-  sh 'cp ~/.config/snapcraft/snapcraft.cfg snapcraft.cfg'
-  sh '~/tooling/kci/contain.rb rake publish'
+  sh 'ls -lah'
+  // sh 'cp ~/.config/snapcraft/snapcraft.cfg snapcraft.cfg'
+  // sh '~/tooling/kci/contain.rb rake publish'
 }
 
 def cleanNode(label = null, body) {
