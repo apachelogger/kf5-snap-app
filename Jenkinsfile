@@ -10,7 +10,7 @@ cleanNode {
   sh "echo '----snapcraft----'; cat snapcraft.yaml; echo '----snapcraft----'"
   archiveArtifacts 'snapcraft.yaml'
   sh 'ls -lah'
-  stash includes: 'snapcraft.yaml, Rakefile, setup/*', name: 'snapcraft'
+  stash includes: 'snapcraft.yaml, Rakefile, setup/**', name: 'snapcraft'
 }
 
 cleanNode {
