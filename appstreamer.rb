@@ -69,7 +69,7 @@ class AppStreamer
   def icon_url
     return nil unless component
     component.icons.each do |icon|
-      return icon.url || icon.filename
+      return icon.filename || icon.url
     end
     nil
   end
