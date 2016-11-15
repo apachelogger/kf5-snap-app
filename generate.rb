@@ -205,7 +205,7 @@ class SnapcraftConfig
 end
 
 DEV_EXCLUSION = %w(cmake debhelper pkg-kde-tools).freeze
-STAGED_DEV_PATH = 'http://build.neon.kde.org/view/testy/job/test_kf5-snap/lastSuccessfulBuild/artifact/stage-dev.json'.freeze
+STAGED_DEV_PATH = 'http://build.neon.kde.org/job/kde-frameworks-5-release_amd64.snap/lastSuccessfulBuild/artifact/stage-dev.json'.freeze
 
 source_name = File.read('appname').strip
 source_version = nil
