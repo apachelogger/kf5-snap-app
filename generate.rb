@@ -4,6 +4,7 @@ require 'tmpdir'
 require 'yaml'
 
 require_relative 'appstreamer'
+require_relative 'desktopfile'
 require_relative 'downloader'
 
 class Source
@@ -155,6 +156,7 @@ class SnapcraftConfig
     end
   end
 
+  # This is really ContentSlot :/
   class Slot
     extend AttrRecorder
     prepend YamlAttributer
@@ -162,6 +164,19 @@ class SnapcraftConfig
     attr_accessor :content
     attr_accessor :interface
     attr_accessor :read
+  end
+
+  class DBusSlot
+    extend AttrRecorder
+    prepend YamlAttributer
+
+    attr_accessor :interface
+    attr_accessor :name
+    attr_accessor :bus
+
+    def initialize
+      @interface = 'dbus'
+    end
   end
 
   class Plug
@@ -226,21 +241,30 @@ appstreamer.expand(config)
 icon_url = appstreamer.icon_url
 File.write("setup/gui/icon#{File.extname(icon_url)}", open(icon_url).read)
 
+desktopfile = nil
 Dir.mktmpdir do |tmpdir|
   debfile = APT::Downloader.new(tmpdir).get(appstreamer.component.pkgname)
   deb = Deb.new(debfile)
   source_version = deb.upstream_version
   config.version = source_version
   deb.extract(tmpdir)
-  desktopfile = Dir.glob("#{tmpdir}/usr/share/applications/**/#{desktop_id}")
-  raise "not one desktop found [#{desktopfile}]" unless desktopfile.size == 1
-  FileUtils.cp(desktopfile[0], 'setup/gui/')
+  desktoppath = Dir.glob("#{tmpdir}/usr/share/applications/**/#{desktop_id}")
+  raise "not one desktop found [#{desktoppath}]" unless desktoppath.size == 1
+  FileUtils.cp(desktoppath[0], 'setup/gui/')
+  desktopfile = Desktopfile.new(desktoppath[0])
 end
 
 app = SnapcraftConfig::App.new
 app.command = "kf5-launch #{source_name}"
 app.plugs = %w(kde-frameworks-5-plug home x11 opengl network network-bind unity7 pulseaudio)
 config.apps[source_name] = app
+
+if desktopfile.dbus?
+  slot = SnapcraftConfig::DBusSlot.new
+  slot.name = desktopfile.service_name
+  slot.bus = 'session'
+  config.slots['session-dbus-interface'] = slot
+end
 
 plug = SnapcraftConfig::Plug.new
 plug.content = 'kde-frameworks-5-all'
