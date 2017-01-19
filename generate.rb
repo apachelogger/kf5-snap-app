@@ -253,7 +253,7 @@ config.name = source_name
 config.summary = source_name
 config.description = source_name
 config.confinement = 'strict'
-config.grade = 'devel'
+config.grade = 'stable'
 
 FileUtils.mkpath('setup/gui')
 appstreamer = AppStreamer.new(desktop_id)
