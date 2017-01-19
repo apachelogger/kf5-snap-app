@@ -12,6 +12,23 @@ class Source
     @upstream_name = upstream_name
   end
 
+  def all_qml_depends
+    @all_qml_depends ||= controls.collect do |control|
+      control.binaries.collect do |binary|
+        next nil unless runtime_binaries.include?(binary['package'])
+        deps = binary.fetch('depends', []) + binary.fetch('recommends', [])
+        deps.collect do |dep|
+          dep = [dep[0]] if dep.size > 1
+          next nil unless dep[0].name.start_with?('qml-module')
+          dep = dep.each { |y| y.architectures = nil; y.version = nil; y.operator = nil }
+          # puts "---> #{dep} ---> #{dep[0].substvar?}"
+          dep = dep.reject(&:substvar?)
+          dep.collect(&:to_s)
+        end.compact
+      end.flatten
+    end.flatten
+  end
+
   def dev_binaries
     dev_only(all_packages)
   end
@@ -315,6 +332,7 @@ source.all_build_depends
 apppart = SnapcraftConfig::Part.new
 apppart.after = %w(kde-frameworks-5-dev)
 apppart.build_packages = (source.all_build_depends - dev_stage) - DEV_EXCLUSION + ['libpulse0']
+apppart.stage_packages = (source.all_qml_depends - dev_stage)
 apppart.configflags = %w(
   -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
   -DCMAKE_INSTALL_PREFIX=/usr
