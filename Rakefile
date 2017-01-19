@@ -21,6 +21,8 @@ task :generate do
   puts File.read('appname')
   sh 'apt install -y appstream devscripts'
   sh 'apt update'
+  # Dependency of deb822 parser borrowed from pangea-tooling.
+  sh 'gem install insensitive_hash'
   ruby 'generate.rb'
 end
 task :generate => [:'repo::setup', :appstream]

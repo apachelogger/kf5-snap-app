@@ -20,26 +20,46 @@ class Source
     runtime_only(all_packages)
   end
 
-
   def all_build_depends
-    @all_build_depends ||= sources.collect do |src|
-      data = `apt-cache showsrc #{src}`.split($/)
-      raise unless $?.success?
-      data = data.find { |x| x.start_with?('Build-Depends:') }
-      data = data.split(' ')[1..-1].join.split(',')
-      data.collect { |x| x.split('(')[0].split('[').join }
+    @all_build_depends ||= controls.collect do |control|
+      bdeps = control.source.fetch('build-depends', []) +
+              control.source.fetch('build-depends-indep', [])
+      bdeps.collect do |x|
+        # TODO: this makes a bunch of assumptions as we have no proper
+        #   resolver for dependencies. in alternates the first always wins
+        #   architecture restrictions are entirely ignored
+        x = [x[0]] if x.size > 1
+        x = x.each { |y| y.architectures = nil; y.version = nil; y.operator = nil }
+        x.collect(&:to_s)
+      end.compact
     end.flatten
   end
 
   private
 
+  def parse_control(src)
+    system("apt-get --download-only source #{src}") || raise
+    system('dpkg-source -x *.dsc source') || raise
+    require_relative 'debian/control'
+    control = Debian::Control.new('source')
+    control.parse!
+    control
+  end
+
+  def controls
+    @controls ||= sources.collect do |src|
+      Dir.mktmpdir do |tmpdir|
+        Dir.chdir(tmpdir) do
+          parse_control(src)
+        end
+      end
+    end
+  end
+
+
   def all_packages
-    @all_packages ||= sources.collect do |src|
-      p src
-      data = `apt-cache showsrc #{src}`.split($/)
-      raise unless $?.success?
-      data = data.find { |x| x.start_with?('Binary:') }
-      data.split(' ')[1..-1].join.split(',')
+    @all_packages ||= controls.collect do |control|
+      control.binaries.collect { |x| x.fetch('package') }
     end.flatten
   end
 
