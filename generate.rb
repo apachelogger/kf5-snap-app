@@ -324,7 +324,7 @@ apppart.configflags = %w(
   -DKDE_SKIP_TEST_SETTINGS=ON
 )
 apppart.plugin = 'cmake'
-apppart.source = "http://download.kde.org/stable/applications/16.08.2/src/#{source_name}-16.08.2.tar.xz"
+apppart.source = "http://download.kde.org/stable/applications/#{source_version}/src/#{source_name}-#{source_version}.tar.xz"
 config.parts[source_name] = apppart
 
 File.write('snapcraft.yaml', YAML.dump(config, indentation: 4))
