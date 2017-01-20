@@ -31,7 +31,7 @@ task :snapcraft do
   # KDoctools is rubbish and lets meinproc resolve asset paths via QStandardPaths
   ENV['XDG_DATA_DIRS'] = "#{Dir.pwd}/stage/usr/local/share:#{Dir.pwd}/stage/usr/share:/usr/local/share:/usr/share"
   sh 'apt install -y snapcraft'
-  sh 'snapcraft'
+  sh 'snapcraft --debug'
 end
 task :snapcraft => :'repo::setup'
 
