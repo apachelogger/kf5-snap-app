@@ -20,6 +20,7 @@
 
 require 'fileutils'
 require 'gir_ffi'
+require 'reverse_markdown'
 require 'rubygems/deprecate'
 
 # Appstream helper to extract data and expand another storage object
@@ -57,7 +58,7 @@ class AppStreamer
   def expand(snap)
     if component
       snap.summary = component.summary
-      snap.description = component.description
+      snap.description = ReverseMarkdown.convert(component.description)
     else
       snap.summary = 'No appstream summary, needs bug filed'
       snap.description = 'No appstream description, needs bug filed'

@@ -23,6 +23,8 @@ task :generate do
   sh 'apt update'
   # Dependency of deb822 parser borrowed from pangea-tooling.
   sh 'gem install insensitive_hash'
+  # So we can convert appstream html to markdown making it readable
+  sh 'gem install reverse_markdown'
   ruby 'generate.rb'
 end
 task :generate => [:'repo::setup', :appstream]
