@@ -183,6 +183,7 @@ class SnapcraftConfig
           -usr/share/doc/*
           -usr/share/man/*
           -usr/share/icons/breeze-dark*
+          -usr/bin/X11
         )
       }
       @snap = %w($exclusion)
