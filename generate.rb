@@ -184,6 +184,7 @@ class SnapcraftConfig
           -usr/share/man/*
           -usr/share/icons/breeze-dark*
           -usr/bin/X11
+          -usr/lib/gcc/x86_64-linux-gnu/6.0.0
         )
       }
       @snap = %w($exclusion)
