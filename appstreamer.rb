@@ -58,7 +58,7 @@ class AppStreamer
   def expand(snap)
     if component
       snap.summary = component.summary
-      snap.description = ReverseMarkdown.convert(component.description)
+      snap.description = ReverseMarkdown.convert(component.description).strip
     else
       snap.summary = 'No appstream summary, needs bug filed'
       snap.description = 'No appstream description, needs bug filed'
