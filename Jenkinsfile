@@ -17,6 +17,7 @@ cleanNode {
   unstash 'snapcraft'
   sh 'tree || ls -lahR'
   sh '~/tooling/kci/contain.rb rake snapcraft'
+  sh 'tree || ls -lahR'
   archiveArtifacts '*_amd64.snap'
   stash name: 'snaps', includes: 'Rakefile, *_amd64.snap'
 }
