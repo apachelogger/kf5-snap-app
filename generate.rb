@@ -137,12 +137,18 @@ class SnapcraftConfig
   end
 
   module YamlAttributer
+    def attr_name_to_yaml(readable_attrs)
+      y = readable_attrs.to_s.tr('_', '-')
+      y = 'prime' if y == 'snap'
+      y
+    end
+
     def encode_with(c)
       c.tag = nil # Unset the tag to prevent clutter
       self.class.readable_attrs.each do |readable_attrs|
-        next unless data = method(readable_attrs).call
+        next unless (data = method(readable_attrs).call)
         next if data.respond_to?(:empty?) && data.empty?
-        c[readable_attrs.to_s.tr('_', '-')] = data
+        c[attr_name_to_yaml(readable_attrs)] = data
       end
       super(c) if defined?(super)
     end
@@ -168,6 +174,11 @@ class SnapcraftConfig
     attr_accessor :snap
     # Hash<String, String>
     attr_accessor :organize
+
+    # Array<String>
+    attr_accessor :debs
+    # Array<String>
+    attr_accessor :exclude_debs
 
     attr_accessor :source
     attr_accessor :configflags
@@ -262,11 +273,14 @@ class SnapcraftConfig
 end
 
 DEV_EXCLUSION = %w(cmake debhelper pkg-kde-tools).freeze
+STAGED_CONTENT_PATH = 'http://build.neon.kde.org/job/kde-frameworks-5-release_amd64.snap/lastSuccessfulBuild/artifact/stage-content.json'.freeze
 STAGED_DEV_PATH = 'http://build.neon.kde.org/job/kde-frameworks-5-release_amd64.snap/lastSuccessfulBuild/artifact/stage-dev.json'.freeze
 
 source_name = File.read('appname').strip
 source_version = nil
 desktop_id = "org.kde.#{source_name}.desktop"
+
+content_stage = JSON.parse(open(STAGED_CONTENT_PATH).read)
 dev_stage = JSON.parse(open(STAGED_DEV_PATH).read)
 dev_stage.reject! { |x| x.include?('doctools') }
 
@@ -334,10 +348,20 @@ config.parts['kde-frameworks-5-env'] = env
 source = Source.new(source_name)
 source.all_build_depends
 
+# Sepcial part containing runtime dependencies that usually would go into
+# stage_packages of the app, due to content share that can cause excess crap
+# being staged however as snapcraft does not know it shouldn't stage
+# what is already in the content share.
+runtime_part = SnapcraftConfig::Part.new
+runtime_part.debs = (source.all_qml_depends - dev_stage - content_stage)
+runtime_part.exclude_debs = dev_stage + content_stage
+runtime_part.source = 'empty'
+runtime_part.plugin = 'stage-debs'
+config.parts['runtime-of-deb'] = runtime_part
+
 apppart = SnapcraftConfig::Part.new
-apppart.after = %w(kde-frameworks-5-dev)
+apppart.after = %w(kde-frameworks-5-dev runtime-of-deb)
 apppart.build_packages = (source.all_build_depends - dev_stage) - DEV_EXCLUSION + ['libpulse0']
-apppart.stage_packages = (source.all_qml_depends - dev_stage)
 apppart.stage = %w(-usr/bin/X11
                    -usr/lib/gcc/x86_64-linux-gnu/6.0.0)
 apppart.configflags = %w(
