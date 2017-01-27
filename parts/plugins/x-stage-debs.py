@@ -77,6 +77,7 @@ class StabeDebsPlugin(snapcraft.BasePlugin):
         os.chdir(self.builddir)
         logger.debug(os.getcwd())
         cmd = ['apt-get',
+               '-y',
                '-o', 'Debug::NoLocking=true',
                '-o', 'Dir::Cache::Archives=' + self.builddir,
                '--download-only', 'install'] + self.options.debs
