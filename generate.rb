@@ -353,8 +353,14 @@ source.all_build_depends
 # being staged however as snapcraft does not know it shouldn't stage
 # what is already in the content share.
 runtime_part = SnapcraftConfig::Part.new
-runtime_part.debs = (source.all_qml_depends - dev_stage - content_stage)
-runtime_part.exclude_debs = dev_stage + content_stage
+# "Issue while loading plugin: properties failed to load for runtime-of-deb [...] has non-unique elements"
+# Apparently in python you cannot remove duplicated entries. Not to worry though
+# in ruby it's literally 5 characters to get the job done.
+# Out of the entire snap stack the thing that pisses me off the most is the one
+# written in python. I really think the shittyness comes from the language
+# more than anything else.
+runtime_part.debs = (source.all_qml_depends - dev_stage - content_stage).uniq
+runtime_part.exclude_debs = (dev_stage + content_stage).uniq
 runtime_part.source = 'empty'
 runtime_part.plugin = 'stage-debs'
 config.parts['runtime-of-deb'] = runtime_part
