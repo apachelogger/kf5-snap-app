@@ -338,7 +338,7 @@ apppart = SnapcraftConfig::Part.new
 apppart.after = %w(kde-frameworks-5-dev)
 apppart.build_packages = (source.all_build_depends - dev_stage) - DEV_EXCLUSION + ['libpulse0']
 apppart.stage_packages = (source.all_qml_depends - dev_stage)
-apppart.stage = %w(-usr/bin/x11
+apppart.stage = %w(-usr/bin/X11
                    -usr/lib/gcc/x86_64-linux-gnu/6.0.0)
 apppart.configflags = %w(
   -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
