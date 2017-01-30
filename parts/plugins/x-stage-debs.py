@@ -74,14 +74,13 @@ class StabeDebsPlugin(snapcraft.BasePlugin):
     def build(self):
         super().build()
 
-        os.chdir(self.builddir)
         logger.debug(os.getcwd())
         cmd = ['apt-get',
                '-y',
                '-o', 'Debug::NoLocking=true',
                '-o', 'Dir::Cache::Archives=' + self.builddir,
                '--download-only', 'install'] + self.options.debs
-        subprocess.check_call(cmd)
+        subprocess.check_call(cmd, cwd=self.builddir)
 
         pkgs_abs_path = glob.glob(os.path.join(self.builddir, '*.deb'))
         for pkg in pkgs_abs_path:
