@@ -40,7 +40,7 @@ class StabeDebsPlugin(snapcraft.BasePlugin):
         schema = super().schema()
         schema['properties']['debs'] = {
             'type': 'array',
-            'minitems': 1,
+            'minitems': 0,
             'uniqueItems': True,
             'items': {
                 'type': 'string',
@@ -49,7 +49,7 @@ class StabeDebsPlugin(snapcraft.BasePlugin):
 
         schema['properties']['exclude-debs'] = {
             'type': 'array',
-            'minitems': 1,
+            'minitems': 0,
             'uniqueItems': True,
             'items': {
                 'type': 'string',
