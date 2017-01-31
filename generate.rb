@@ -47,7 +47,8 @@ class Source
         #   architecture restrictions are entirely ignored
         x = [x[0]] if x.size > 1
         x = x.each { |y| y.architectures = nil; y.version = nil; y.operator = nil }
-        x.collect(&:to_s)
+        # https://bugs.launchpad.net/snapcraft/+bug/1660666
+        x.collect(&:to_s).collect { |y| y.gsub('libtiff-dev', 'libtiff5-dev') }
       end.compact
     end.flatten
   end
