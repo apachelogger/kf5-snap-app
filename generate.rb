@@ -359,8 +359,8 @@ runtime_part = SnapcraftConfig::Part.new
 # Out of the entire snap stack the thing that pisses me off the most is the one
 # written in python. I really think the shittyness comes from the language
 # more than anything else.
-runtime_part.debs = (source.all_qml_depends - dev_stage - content_stage).uniq
-runtime_part.exclude_debs = (dev_stage + content_stage).uniq
+runtime_part.debs = (source.all_qml_depends - dev_stage - content_stage).uniq.compact
+runtime_part.exclude_debs = (dev_stage + content_stage).uniq.compact
 runtime_part.source = 'empty'
 runtime_part.plugin = 'stage-debs'
 config.parts['runtime-of-deb'] = runtime_part
