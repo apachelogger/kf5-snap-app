@@ -12,7 +12,7 @@ cleanNode {
   stash includes: '**', name: 'snapcraft'
 }
 
-cleanNode {
+cleanNode('amd64 cloud') {
   stage 'snapcraft'
   unstash 'snapcraft'
   sh 'tree || ls -lahR'
