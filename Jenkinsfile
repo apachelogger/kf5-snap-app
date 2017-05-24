@@ -6,7 +6,7 @@ cleanNode {
   git 'https://github.com/apachelogger/kf5-snap-app'
   sh 'echo $APPNAME > appname'
   sh 'ls -lah'
-  sh '~/tooling/kci/contain.rb rake generate'
+  sh '~/tooling/nci/contain.rb rake generate'
   sh "echo '----snapcraft----'; cat snapcraft.yaml; echo '----snapcraft----'"
   archiveArtifacts 'snapcraft.yaml, setup/**'
   stash includes: '**', name: 'snapcraft'
@@ -16,7 +16,7 @@ cleanNode('amd64 cloud') {
   stage 'snapcraft'
   unstash 'snapcraft'
   sh 'tree || ls -lahR'
-  sh '~/tooling/kci/contain.rb rake snapcraft'
+  sh '~/tooling/nci/contain.rb rake snapcraft'
   archiveArtifacts '*_amd64.snap'
   stash name: 'snaps', includes: 'Rakefile, *_amd64.snap'
 }
@@ -30,7 +30,7 @@ cleanNode('master') {
   // Even so we should move to a contain.rb which forward mounts the snapcraft
   // dir as volume into the container.
   sh 'cp ~/.config/snapcraft/snapcraft.cfg snapcraft.cfg'
-  sh '~/tooling/kci/contain.rb rake publish'
+  sh '~/tooling/nci/contain.rb rake publish'
 }
 
 def cleanNode(label = null, body) {
