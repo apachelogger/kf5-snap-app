@@ -274,8 +274,8 @@ class SnapcraftConfig
 end
 
 DEV_EXCLUSION = %w(cmake debhelper pkg-kde-tools).freeze
-STAGED_CONTENT_PATH = 'http://build.neon.kde.org/job/kde-frameworks-5-release_amd64.snap/lastSuccessfulBuild/artifact/stage-content.json'.freeze
-STAGED_DEV_PATH = 'http://build.neon.kde.org/job/kde-frameworks-5-release_amd64.snap/lastSuccessfulBuild/artifact/stage-dev.json'.freeze
+STAGED_CONTENT_PATH = 'https://build.neon.kde.org/job/kde-frameworks-5-release_amd64.snap/lastSuccessfulBuild/artifact/stage-content.json'.freeze
+STAGED_DEV_PATH = 'https://build.neon.kde.org/job/kde-frameworks-5-release_amd64.snap/lastSuccessfulBuild/artifact/stage-dev.json'.freeze
 
 source_name = File.read('appname').strip
 source_version = nil
@@ -332,7 +332,7 @@ config.plugs['kde-frameworks-5-plug'] = plug
 
 dev = SnapcraftConfig::Part.new
 dev.plugin = 'dump'
-dev.source = 'http://build.neon.kde.org/job/kde-frameworks-5-release_amd64.snap/lastSuccessfulBuild/artifact/kde-frameworks-5-dev_amd64.tar.xz'
+dev.source = 'https://build.neon.kde.org/job/kde-frameworks-5-release_amd64.snap/lastSuccessfulBuild/artifact/kde-frameworks-5-dev_amd64.tar.xz'
 # dev.source = '/home/me/Downloads/kde-frameworks-5-dev_amd64.tar.xz'
 dev.stage_packages = []
 dev.filesets = nil # no default sets needed
@@ -380,7 +380,7 @@ apppart.configflags = %w(
   -DKDE_SKIP_TEST_SETTINGS=ON
 )
 apppart.plugin = 'cmake'
-apppart.source = "http://download.kde.org/stable/applications/#{source_version}/src/#{source_name}-#{source_version}.tar.xz"
+apppart.source = "https://download.kde.org/stable/applications/#{source_version}/src/#{source_name}-#{source_version}.tar.xz"
 config.parts[source_name] = apppart
 
 File.write('snapcraft.yaml', YAML.dump(config, indentation: 4))
