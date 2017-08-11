@@ -45,4 +45,26 @@ task :publish do
   FileUtils.mkpath(cfgdir)
   File.write("#{cfgdir}/snapcraft.cfg", File.read('snapcraft.cfg'))
   sh 'snapcraft push *.snap'
+  revision_lines = `snapcraft revisions $APPNAME`.strip.split($/)[1..-1]
+  revs = revision_lines.collect { |l| Revision.new(l) }
+  p rev = revs[0]
+  if rev.channels != '-' # not published
+    warn "#{ENV['APPNAME']} is already published in #{rev.channels}"
+    return
+  end
+  sh "snapcraft release #{ENV['APPNAME']} #{rev} candidate"
+end
+
+class Revision
+  attr_reader :number
+  attr_reader :channels
+
+  def initialize(line)
+    @number, _date, _arch, _version, @channels = line.split(/\s+/, 5)
+    @number = @number.to_i # convert from str to int
+  end
+
+  def to_s
+    number.to_s
+  end
 end
