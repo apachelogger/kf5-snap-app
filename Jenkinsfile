@@ -1,5 +1,6 @@
 env.DIST = 'xenial'
 env.TYPE = 'user'
+env.DOCKER_ENV_WHITELIST = 'APPNAME'
 
 cleanNode('amd64') {
   stage 'generate'
