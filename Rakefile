@@ -45,8 +45,8 @@ task :publish do
   FileUtils.mkpath(cfgdir)
   File.write("#{cfgdir}/snapcraft.cfg", File.read('snapcraft.cfg'))
   sh 'snapcraft push *.snap'
-  revision_lines = `snapcraft revisions $APPNAME`.strip.split($/)[1..-1]
-  revs = revision_lines.collect { |l| Revision.new(l) }
+  rev_lines = `snapcraft revisions #{ENV['APPNAME']}`.strip.split($/)[1..-1]
+  revs = rev_lines.collect { |l| Revision.new(l) }
   p rev = revs[0]
   if rev.channels != '-' # not published
     warn "#{ENV['APPNAME']} is already published in #{rev.channels}"
