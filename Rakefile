@@ -38,6 +38,8 @@ end
 task :snapcraft => :'repo::setup'
 
 task :publish do
+  puts File.read('appname')
+  ENV['APPNAME'] = File.read('appname')
   require 'fileutils'
   sh 'apt update'
   sh 'apt install -y snapcraft'

@@ -25,6 +25,8 @@ cleanNode('amd64 && cloud') {
 cleanNode('master') {
   stage 'snapcraft push'
   unstash 'snaps'
+  sh 'env'
+  sh 'echo $APPNAME > appname'
   sh 'tree || ls -lahR'
   // Temporary workspace during pipeline execution can't be accessed via UI, so
   // this should be save.
