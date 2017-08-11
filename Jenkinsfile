@@ -1,7 +1,7 @@
 env.DIST = 'xenial'
 env.TYPE = 'user'
 
-cleanNode {
+cleanNode('amd64') {
   stage 'generate'
   git 'https://github.com/apachelogger/kf5-snap-app'
   sh 'echo $APPNAME > appname'
