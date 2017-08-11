@@ -38,8 +38,8 @@ end
 task :snapcraft => :'repo::setup'
 
 task :publish do
-  puts File.read('appname')
-  ENV['APPNAME'] = File.read('appname')
+  # Compat, contain.rb currently has a bug overwriting the whitelist of vars.
+  ENV['APPNAME'] = File.read('appname').strip
   require 'fileutils'
   sh 'apt update'
   sh 'apt install -y snapcraft'
