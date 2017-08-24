@@ -19,12 +19,14 @@ task :appstream => :'repo::setup'
 
 task :generate do
   puts File.read('appname')
-  sh 'apt install -y appstream devscripts'
   sh 'apt update'
+  sh 'apt dist-upgrade -y'
+  sh 'apt install -y appstream devscripts ruby-dev'
   # Dependency of deb822 parser borrowed from pangea-tooling.
   sh 'gem install insensitive_hash'
   # So we can convert appstream html to markdown making it readable
   sh 'gem install reverse_markdown'
+  sh 'gem install gir_ffi'
   ruby 'generate.rb'
 end
 task :generate => [:'repo::setup', :appstream]
