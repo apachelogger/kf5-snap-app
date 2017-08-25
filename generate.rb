@@ -384,3 +384,14 @@ apppart.source = "https://download.kde.org/stable/applications/#{source_version}
 config.parts[source_name] = apppart
 
 File.write('snapcraft.yaml', YAML.dump(config, indentation: 4))
+
+exit unless ENV['SIMPLE']
+# Simplify config for usage as-is. Simplified configs are extended at build time
+# by our tooling. Generally they could also be self-sufficient though.
+config.parts.clear
+apppart.after.clear
+apppart.filesets = nil
+apppart.stage = nil
+apppart.snap = nil
+config.parts[source_name] = apppart
+File.write('snapcraft.yaml', YAML.dump(config, indentation: 4))
