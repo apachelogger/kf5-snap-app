@@ -389,7 +389,8 @@ exit unless ENV['SIMPLE']
 # Simplify config for usage as-is. Simplified configs are extended at build time
 # by our tooling. Generally they could also be self-sufficient though.
 config.parts.clear
-apppart.after.clear
+# Fixate to remote parts.
+apppart.after = %w[kde-frameworks-5-dev kde-frameworks-5-env]
 apppart.filesets = nil
 apppart.stage = nil
 apppart.snap = nil
