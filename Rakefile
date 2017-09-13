@@ -56,7 +56,7 @@ task :publish do
     warn "#{ENV['APPNAME']} is already published in #{rev.channels}"
     return
   end
-  sh "snapcraft release #{ENV['APPNAME']} #{rev} candidate,beta,edge"
+  sh "snapcraft release #{ENV['APPNAME']} #{rev} candidate,beta"
 end
 
 class Revision
