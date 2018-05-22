@@ -19,7 +19,7 @@ class Source
         deps = binary.fetch('depends', []) + binary.fetch('recommends', [])
         deps.collect do |dep|
           dep = [dep[0]] if dep.size > 1
-          next nil unless dep[0].name.start_with?('qml-module')
+          next nil unless dep[0].name.start_with?('qml-module') || dep[0].name == 'cups-bsd'
           dep = dep.each { |y| y.architectures = nil; y.version = nil; y.operator = nil }
           # puts "---> #{dep} ---> #{dep[0].substvar?}"
           dep = dep.reject(&:substvar?)
