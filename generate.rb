@@ -322,6 +322,7 @@ app.plugs = %w[
   network-bind
   unity7
   pulseaudio
+  desktop
 ]
 config.apps[source_name] = app
 
