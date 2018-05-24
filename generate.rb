@@ -324,6 +324,7 @@ app.plugs = %w[
   pulseaudio
   desktop
 ]
+app.plugs << 'cups-control' if source_name == 'okular'
 config.apps[source_name] = app
 
 if desktopfile.dbus?
