@@ -392,6 +392,9 @@ apppart.configflags = %w(
 )
 apppart.plugin = 'cmake'
 apppart.source = "https://download.kde.org/stable/applications/#{source_version}/src/#{source_name}-#{source_version}.tar.xz"
+if source_name == 'konversation'
+    apppart.source = "https://download.kde.org/stable/konversation/#{source_version}/src/#{source_name}-#{source_version}.tar.xz"
+end
 config.parts[source_name] = apppart
 
 File.write('snapcraft.yaml', YAML.dump(config, indentation: 4))
