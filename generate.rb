@@ -276,6 +276,7 @@ end
 DEV_EXCLUSION = %w(cmake debhelper pkg-kde-tools).freeze
 STAGED_CONTENT_PATH = 'https://build.neon.kde.org/job/kde-frameworks-5-release_amd64.snap/lastSuccessfulBuild/artifact/stage-content.json'.freeze
 STAGED_DEV_PATH = 'https://build.neon.kde.org/job/kde-frameworks-5-release_amd64.snap/lastSuccessfulBuild/artifact/stage-dev.json'.freeze
+CONTENT_PATH = 'https://build.neon.kde.org/job/kde-frameworks-5-release_amd64.snap/lastSuccessfulBuild/artifact/content.json'.freeze
 
 source_name = File.read('appname').strip
 source_version = nil
@@ -334,8 +335,11 @@ if desktopfile.dbus?
   config.slots['session-dbus-interface'] = slot
 end
 
+content = JSON.parse(open(CONTENT_PATH).read)
+raise 'Could not determinte content ID' unless content
+
 plug = SnapcraftConfig::Plug.new
-plug.content = 'kde-frameworks-5-all'
+plug.content = content
 plug.interface = 'content'
 plug.target = 'kf5'
 plug.default_provider = 'kde-frameworks-5'
