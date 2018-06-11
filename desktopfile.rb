@@ -42,6 +42,8 @@ class Desktopfile
     #   Technically wayland may also be set programatically though, so
     #   this assumption may not always be true and we indeed need to resolve
     #   org.kde.binaryname, which is tricky because that entails parsing Exec=.
-    File.basename(path, '.desktop')
+    name = File.basename(path, '.desktop')
+    raise unless name.start_with?('org.kde.')
+    name
   end
 end
