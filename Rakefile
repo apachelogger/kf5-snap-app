@@ -1,3 +1,5 @@
+ENV['TERM'] = 'dumb' # make snpacraft not give garbage progress spam
+
 SOURCES = [
   'deb http://archive.neon.kde.org/user xenial main',
   'deb http://archive.neon.kde.org/release xenial main',
