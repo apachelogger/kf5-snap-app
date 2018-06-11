@@ -20,22 +20,24 @@
 
 class Desktopfile
   attr_reader :path
+  attr_reader :lines
 
+  # NB: the data needs to be read here. we move out of the context of the
+  #   temporary file after construction!!!
   def initialize(path)
     @path = path
+    @lines = File.read(path).split($/)
   end
 
   def dbus?
-    File.read(path).split($/).any? do |x|
+    lines.any? do |x|
       x.start_with?('X-DBUS-ServiceName=', /X-DBUS-StartupType=(Multi|Unique)/)
     end
   end
 
   def service_name
     return nil unless dbus?
-    dbus_line = File.read(path).split($/).find do |x|
-      x.start_with?('X-DBUS-ServiceName=')
-    end
+    dbus_line = lines.find { |x| x.start_with?('X-DBUS-ServiceName=') }
     return dbus_line.split('=', 2)[-1] if dbus_line
     # NB: technically the name is assumed to be org.kde.binaryname. However,
     #   due to wayland the desktop file should be named thusly anyway.
