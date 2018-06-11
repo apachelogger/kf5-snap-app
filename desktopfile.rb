@@ -31,7 +31,7 @@ class Desktopfile
 
   def dbus?
     lines.any? do |x|
-      x.start_with?('X-DBUS-ServiceName=', /X-DBUS-StartupType=(Multi|Unique)/)
+      x.start_with?('X-DBUS-ServiceName=') || x.match?(/X-DBUS-StartupType=(Multi|Unique)/)
     end
   end
 
