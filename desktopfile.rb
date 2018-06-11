@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 #
-# Copyright (C) 2017 Harald Sitter <sitter@kde.org>
+# Copyright (C) 2017-2918 Harald Sitter <sitter@kde.org>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,19 +19,29 @@
 # License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 class Desktopfile
-  attr_reader :service_name
+  attr_reader :path
 
   def initialize(path)
     @path = path
-    dbus_line = File.read(path).split($/).find do |x|
-      x.start_with?('X-DBUS-ServiceName=')
-    end
-    @has_dbus = dbus_line || false
-    return unless @has_dbus
-    @service_name = dbus_line.split('=', 2)[-1]
   end
 
   def dbus?
-    @has_dbus
+    File.read(path).split($/).any? do |x|
+      x.start_with?('X-DBUS-ServiceName=', /X-DBUS-StartupType=(Multi|Unique)/)
+    end
+  end
+
+  def service_name
+    return nil unless dbus?
+    dbus_line = File.read(path).split($/).find do |x|
+      x.start_with?('X-DBUS-ServiceName=')
+    end
+    return dbus_line.split('=', 2)[-1] if dbus_line
+    # NB: technically the name is assumed to be org.kde.binaryname. However,
+    #   due to wayland the desktop file should be named thusly anyway.
+    #   Technically wayland may also be set programatically though, so
+    #   this assumption may not always be true and we indeed need to resolve
+    #   org.kde.binaryname, which is tricky because that entails parsing Exec=.
+    File.basename(path, '.desktop')
   end
 end
