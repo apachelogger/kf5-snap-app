@@ -389,22 +389,21 @@ runtime_part.plugin = 'stage-debs'
 config.parts['runtime-of-deb'] = runtime_part
 
 apppart = SnapcraftConfig::Part.new
-apppart.after = %w(kde-frameworks-5-dev runtime-of-deb)
+apppart.after = %w[kde-frameworks-5-dev runtime-of-deb]
 apppart.build_packages = (source.all_build_depends - dev_stage) - DEV_EXCLUSION + ['libpulse0']
-apppart.stage = %w(-usr/bin/X11
-                   -usr/lib/gcc/x86_64-linux-gnu/6.0.0)
-apppart.configflags = %w(
+apppart.stage = %w[-usr/bin/X11 -usr/lib/gcc/x86_64-linux-gnu/6.0.0]
+apppart.configflags = %w[
   -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
   -DCMAKE_INSTALL_PREFIX=/usr
   -DCMAKE_BUILD_TYPE=Release
   -DENABLE_TESTING=OFF
   -DBUILD_TESTING=OFF
   -DKDE_SKIP_TEST_SETTINGS=ON
-)
+]
 apppart.plugin = 'cmake'
 apppart.source = "https://download.kde.org/stable/applications/#{source_version}/src/#{source_name}-#{source_version}.tar.xz"
 if source_name == 'konversation'
-    apppart.source = "https://download.kde.org/stable/konversation/#{source_version}/src/#{source_name}-#{source_version}.tar.xz"
+  apppart.source = "https://download.kde.org/stable/konversation/#{source_version}/src/#{source_name}-#{source_version}.tar.xz"
 end
 apppart.common_id = [appstreamer.component.id] if appstreamer.component
 config.parts[source_name] = apppart
