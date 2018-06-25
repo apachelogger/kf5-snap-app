@@ -184,6 +184,9 @@ class SnapcraftConfig
     attr_accessor :source
     attr_accessor :configflags
 
+    # Array<String>
+    attr_accessor :parse_info
+
     def initialize
       @after = []
       @plugin = 'nil'
@@ -249,6 +252,7 @@ class SnapcraftConfig
 
     attr_accessor :command
     attr_accessor :plugs
+    attr_accessor :common_id
   end
 
   extend AttrRecorder
@@ -258,6 +262,7 @@ class SnapcraftConfig
   attr_accessor :version
   attr_accessor :summary
   attr_accessor :description
+  attr_accessor :adopt_info
   attr_accessor :confinement
   attr_accessor :grade
   attr_accessor :apps
@@ -292,6 +297,7 @@ config.summary = source_name
 config.description = source_name
 config.confinement = 'strict'
 config.grade = 'stable'
+config.adopt_info = source_name
 
 FileUtils.mkpath('setup/gui')
 appstreamer = AppStreamer.new(desktop_id)
@@ -326,6 +332,7 @@ app.plugs = %w[
   desktop
 ]
 app.plugs << 'cups-control' if source_name == 'okular'
+app.common_id = appstreamer.component.id if appstreamer.component
 config.apps[source_name] = app
 
 if desktopfile.dbus?
@@ -399,6 +406,7 @@ apppart.source = "https://download.kde.org/stable/applications/#{source_version}
 if source_name == 'konversation'
     apppart.source = "https://download.kde.org/stable/konversation/#{source_version}/src/#{source_name}-#{source_version}.tar.xz"
 end
+apppart.common_id = [appstreamer.component.id] if appstreamer.component
 config.parts[source_name] = apppart
 
 File.write('snapcraft.yaml', YAML.dump(config, indentation: 4))
