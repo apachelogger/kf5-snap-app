@@ -322,7 +322,7 @@ Dir.mktmpdir do |tmpdir|
                   "#{tmpdir}/usr/share/metainfo"]
   appdata_dirs.each do |dir|
     Dir.glob("#{dir}/*.xml") do |appdata|
-      appdatafiles << File.basename(appdata)
+      appdatafiles << appdata.sub("#{tmpdir}/", '')
     end
   end
 end
@@ -336,13 +336,15 @@ if appstreamer.component
     # May have different endings based on legacyness.
     #   basename only strips the defined endings, so it's save to run it
     #   sequentially to strip both types.
-    xbase = File.basename(x, '.appdata.xml')
+    xbase = File.basename(x)
+    xbase = File.basename(xbase, '.appdata.xml')
     xbase = File.basename(xbase, '.metainfo.xml')
     basename == xbase
   end
   raise 'could not find main appdata' unless appdata
   appdatafiles << appdatafiles.delete(appdata)
 end
+p ['appdatafiles', appdatafiles]
 
 app = SnapcraftConfig::App.new
 app.command = "kf5-launch #{source_name}"
