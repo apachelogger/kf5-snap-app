@@ -306,6 +306,7 @@ icon_url = appstreamer.icon_url
 File.write("setup/gui/icon#{File.extname(icon_url)}", open(icon_url).read)
 
 desktopfile = nil
+appdatafiles = []
 Dir.mktmpdir do |tmpdir|
   debfile = APT::Downloader.new(tmpdir).get(appstreamer.component.pkgname)
   deb = Deb.new(debfile)
@@ -316,6 +317,31 @@ Dir.mktmpdir do |tmpdir|
   raise "not one desktop found [#{desktoppath}]" unless desktoppath.size == 1
   FileUtils.cp(desktoppath[0], 'setup/gui/')
   desktopfile = Desktopfile.new(desktoppath[0])
+
+  appdata_dirs = ["#{tmpdir}/usr/share/appdata",
+                  "#{tmpdir}/usr/share/metainfo"]
+  appdata_dirs.each do |dir|
+    Dir.glob("#{dir}/*.xml") do |appdata|
+      appdatafiles << File.basename(appdata)
+    end
+  end
+end
+
+if appstreamer.component
+  # Make sure the main app component is the last one, the last one is considered
+  # the "main".
+  # https://forum.snapcraft.io/t/control-which-common-id-the-adopt-info-comes-from/6091
+  basename = appstreamer.component.id.gsub('.desktop', '')
+  appdata = appdatafiles.find do |x|
+    # May have different endings based on legacyness.
+    #   basename only strips the defined endings, so it's save to run it
+    #   sequentially to strip both types.
+    xbase = File.basename(x, '.appdata.xml')
+    xbase = File.basename(xbase, '.metainfo.xml')
+    basename == xbase
+  end
+  raise 'could not find main appdata' unless appdata
+  appdatafiles << appdatafiles.delete(appdata)
 end
 
 app = SnapcraftConfig::App.new
@@ -406,9 +432,7 @@ if source_name == 'konversation'
   apppart.source = "https://download.kde.org/stable/konversation/#{source_version}/src/#{source_name}-#{source_version}.tar.xz"
 end
 if appstreamer.component
-  apppart.parse_info = [
-    appstreamer.component.id.gsub('.desktop', '') + '.appdata.xml'
-  ]
+  apppart.parse_info = appdatafiles
 end
 config.parts[source_name] = apppart
 
